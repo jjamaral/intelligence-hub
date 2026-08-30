@@ -1,0 +1,10 @@
+{
+  "name": "intelligence-hub-repository",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "typecheck": "npm --prefix intelligence_hub run typecheck",
+    "test": "npm --prefix intelligence_hub test",
+    "build": "npm --prefix intelligence_hub run build"
+  }
+}

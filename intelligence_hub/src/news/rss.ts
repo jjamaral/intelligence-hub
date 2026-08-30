@@ -1,0 +1,4 @@
+export interface ParsedFeedItem { readonly title:string; readonly url:string; readonly summary:string; readonly publishedAt:string; }
+function decode(s:string):string{return s.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g,"$1").replace(/&amp;/g,"&").replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&quot;/g,'"').replace(/&#39;/g,"'").trim();}
+function tag(block:string,name:string):string{const m=block.match(new RegExp(`<${name}[^>]*>([\\s\\S]*?)<\\/${name}>`,"i"));return m?.[1]?decode(m[1]):"";}
+export function parseRss(xml:string):readonly ParsedFeedItem[]{return [...xml.matchAll(/<item\b[^>]*>([\s\S]*?)<\/item>/gi)].flatMap((m)=>{const b=m[1]??"";const title=tag(b,"title"),url=tag(b,"link"),summary=tag(b,"description"),raw=tag(b,"pubDate");if(!title||!url)return[];const d=new Date(raw);return [{title,url,summary,publishedAt:Number.isNaN(d.getTime())?new Date().toISOString():d.toISOString()}];});}

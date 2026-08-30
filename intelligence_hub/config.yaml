@@ -1,0 +1,43 @@
+name: Intelligence Hub
+version: "0.1.0"
+slug: intelligence_hub
+description: Local-first FC Porto, AI and market intelligence with Home Assistant alerts.
+startup: application
+boot: auto
+init: false
+stage: experimental
+arch:
+  - amd64
+  - aarch64
+homeassistant_api: true
+ingress: true
+ingress_port: 8099
+panel_icon: mdi:brain
+panel_title: Intelligence Hub
+ports:
+  8099/tcp: null
+ports_description:
+  8099/tcp: Intelligence Hub API (optional external access)
+options:
+  news_poll_minutes: 15
+  market_poll_minutes: 15
+  alert_threshold: 75
+  notify_service: ""
+  twelve_data_api_key: ""
+  quiet_start: "23:00"
+  quiet_end: "07:30"
+  market_symbols:
+    - SPY
+    - TSLA
+    - UBER
+    - SPCX
+schema:
+  news_poll_minutes: int(1,1440)
+  market_poll_minutes: int(1,1440)
+  alert_threshold: int(0,100)
+  notify_service: str?
+  twelve_data_api_key: password?
+  quiet_start: str
+  quiet_end: str
+  market_symbols:
+    - str
