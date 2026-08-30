@@ -13,6 +13,13 @@ test("parseAppConfig returns safe defaults", () => {
   assert.equal(config.quietHours.end, "07:30");
   assert.deepEqual(config.marketSymbols, ["SPY", "TSLA", "UBER", "SPCX"]);
   assert.ok(config.newsFeeds.length >= 2);
+  assert.deepEqual(config.newsFeeds[0], {
+    id: "fc-porto-fabrizio-romano",
+    topic: "fc_porto",
+    source: "Fabrizio Romano",
+    url: "https://news.google.com/rss/search?q=%22Fabrizio+Romano%22+%22FC+Porto%22&hl=en-US&gl=US&ceid=US%3Aen",
+    priorityBoost: 35
+  });
 });
 
 test("parseAppConfig accepts Home Assistant options", () => {
@@ -37,4 +44,13 @@ test("parseAppConfig accepts Home Assistant options", () => {
 
 test("parseAppConfig rejects values with the wrong runtime type", () => {
   assert.throws(() => parseAppConfig({ alert_threshold: "high" }), /alert_threshold/);
+});
+
+test("parseAppConfig validates custom feed priority boosts", () => {
+  assert.throws(
+    () => parseAppConfig({
+      news_feeds: [{ id: "feed", topic: "fc_porto", url: "https://example.com/rss", source: "Example", priority_boost: 101 }]
+    }),
+    /priority_boost/
+  );
 });

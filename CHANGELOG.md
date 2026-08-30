@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.3 - 2026-08-30
+
+- Start ingress before initial external collection and bound provider requests with timeouts.
+- Expose collector readiness and failures through `/health`.
+- Add a useful ingress root response and richer Home Assistant sensor attributes.
+- Add a highest-priority Fabrizio Romano FC Porto transfer source and dedicated sensor.
+- Align CI with locked dependencies and validate the Docker build.
+- Install timezone data in the runtime image for local quiet-hours behavior.
 
 ## 0.1.1 - 2026-08-30
 

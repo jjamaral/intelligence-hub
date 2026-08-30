@@ -21,3 +21,33 @@ test("equivalent normalized headlines have the same dedup key", () => {
   const b = processFeedItem({title:"FC PORTO confirma reforço",url:"https://b",summary:"",publishedAt:now},{id:"f",topic:"fc_porto",url:"https://feed",source:"B"},now);
   assert.equal(a.dedupKey,b.dedupKey);
 });
+
+test("Fabrizio Romano transfer reports receive the highest source priority", () => {
+  const report = {
+    title: "Fabrizio Romano: FC Porto interested in new striker",
+    url: "https://x.com/FabrizioRomano/status/1",
+    summary: "Transfer interest reported by Fabrizio Romano",
+    publishedAt: now
+  };
+  const prioritized = processFeedItem(
+    report,
+    {
+      id: "fc-porto-fabrizio-romano",
+      topic: "fc_porto",
+      url: "https://news.google.com/rss/search?q=fabrizio",
+      source: "Fabrizio Romano",
+      priorityBoost: 35
+    },
+    now
+  );
+  const standard = processFeedItem(
+    report,
+    { id: "standard", topic: "fc_porto", url: "https://example.com/rss", source: "Standard source" },
+    now
+  );
+
+  assert.equal(prioritized.category, "transfer");
+  assert.equal(prioritized.relevanceScore, 100);
+  assert.equal(standard.relevanceScore, 78);
+  assert.ok(prioritized.relevanceScore > standard.relevanceScore);
+});

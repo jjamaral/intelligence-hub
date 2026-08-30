@@ -14,8 +14,7 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "types": [],
-    "typeRoots": ["./types"]
+    "types": ["node"]
   },
-  "include": ["src/**/*.ts", "tests/**/*.ts", "types/**/*.d.ts"]
+  "include": ["src/**/*.ts", "tests/**/*.ts"]
 }

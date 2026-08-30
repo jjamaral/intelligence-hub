@@ -22,6 +22,24 @@ export interface NewsFeedConfig {
   readonly topic: Exclude<Topic, "markets">;
   readonly url: string;
   readonly source: string;
+  readonly priorityBoost?: number;
+}
+
+export type CollectorStatus = "disabled" | "idle" | "running" | "ok" | "degraded";
+
+export interface CollectorHealth {
+  readonly status: CollectorStatus;
+  readonly errors: readonly string[];
+  readonly lastAttemptAt?: string;
+  readonly lastSuccessAt?: string;
+}
+
+export interface HubHealth {
+  readonly status: "starting" | "ready" | "degraded";
+  readonly collectors: {
+    readonly news: CollectorHealth;
+    readonly markets: CollectorHealth;
+  };
 }
 
 export interface AppConfig {

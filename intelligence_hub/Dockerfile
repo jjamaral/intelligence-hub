@@ -1,6 +1,6 @@
 FROM node:22.16.0-alpine
 
-ARG BUILD_VERSION=0.1.2
+ARG BUILD_VERSION=0.1.3
 ARG BUILD_ARCH=amd64
 
 LABEL io.hass.version="${BUILD_VERSION}" \
@@ -9,16 +9,17 @@ LABEL io.hass.version="${BUILD_VERSION}" \
 
 WORKDIR /app
 
+RUN apk add --no-cache tzdata
+
 COPY package.json package-lock.json ./
 RUN npm ci
 
 COPY tsconfig.json tsconfig.build.json ./
-COPY types ./types
 COPY src ./src
 
 RUN npm run build \
     && npm prune --omit=dev \
-    && rm -rf src types tsconfig.json tsconfig.build.json
+    && rm -rf src tsconfig.json tsconfig.build.json
 
 ENV NODE_ENV=production \
     INTELLIGENCE_HUB_OPTIONS=/data/options.json

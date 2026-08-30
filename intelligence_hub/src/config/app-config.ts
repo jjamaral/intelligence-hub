@@ -2,6 +2,13 @@ import { readFile } from "node:fs/promises";
 import type { AppConfig, NewsFeedConfig, QuietHours } from "../domain/types.js";
 
 const DEFAULT_NEWS_FEEDS: readonly NewsFeedConfig[] = [
+  {
+    id: "fc-porto-fabrizio-romano",
+    topic: "fc_porto",
+    source: "Fabrizio Romano",
+    url: "https://news.google.com/rss/search?q=%22Fabrizio+Romano%22+%22FC+Porto%22&hl=en-US&gl=US&ceid=US%3Aen",
+    priorityBoost: 35
+  },
   { id: "fc-porto-all", topic: "fc_porto", source: "Google News", url: "https://news.google.com/rss/search?q=%22FC+Porto%22+futebol&hl=pt-PT&gl=PT&ceid=PT:pt-150" },
   { id: "fc-porto-abola", topic: "fc_porto", source: "A Bola via Google News", url: "https://news.google.com/rss/search?q=%22FC+Porto%22+site%3Aabola.pt&hl=pt-PT&gl=PT&ceid=PT:pt-150" },
   { id: "fc-porto-record", topic: "fc_porto", source: "Record via Google News", url: "https://news.google.com/rss/search?q=%22FC+Porto%22+site%3Arecord.pt&hl=pt-PT&gl=PT&ceid=PT:pt-150" },
@@ -78,11 +85,15 @@ function readNewsFeeds(record: Record<string, unknown>): readonly NewsFeedConfig
     const topic = item["topic"];
     const url = item["url"];
     const source = item["source"];
+    const priorityBoost = item["priority_boost"];
     if (typeof id !== "string" || id.trim() === "") throw new Error(`news_feeds[${index}].id must be a non-empty string`);
     if (topic !== "fc_porto" && topic !== "ai") throw new Error(`news_feeds[${index}].topic is invalid`);
     if (typeof url !== "string" || !/^https?:\/\//.test(url)) throw new Error(`news_feeds[${index}].url must be http(s)`);
     if (typeof source !== "string" || source.trim() === "") throw new Error(`news_feeds[${index}].source must be a non-empty string`);
-    return { id, topic, url, source };
+    if (priorityBoost !== undefined && (typeof priorityBoost !== "number" || !Number.isFinite(priorityBoost) || priorityBoost < 0 || priorityBoost > 100)) {
+      throw new Error(`news_feeds[${index}].priority_boost must be between 0 and 100`);
+    }
+    return { id, topic, url, source, ...(priorityBoost === undefined ? {} : { priorityBoost }) };
   });
 }
 
