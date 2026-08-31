@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.5 - 2026-08-31
+
+- Increment version so Home Assistant detects the dashboard and market card update.
+
 ## 0.1.4 - 2026-08-30
 
 - Publish up to five recent stories per news sensor for native Home Assistant dashboards.
