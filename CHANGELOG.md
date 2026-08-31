@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.8 - 2026-08-31
+
+- Remove the optional stocks dashboard card from the Home Assistant documentation.
+
 ## 0.1.7 - 2026-08-31
 
 - Make trend-card links render as compact clickable HTML instead of exposing long Google News URLs.

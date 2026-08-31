@@ -19,7 +19,7 @@ test("ingress root describes the available Intelligence Hub endpoints", async ()
     assert.equal(response.status, 200);
     assert.deepEqual(response.data, {
       name: "Intelligence Hub",
-      version: "0.1.4",
+      version: "0.1.8",
       endpoints: [
         "GET /health",
         "GET /api/news",

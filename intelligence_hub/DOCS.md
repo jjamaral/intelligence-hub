@@ -23,7 +23,7 @@ The app publishes `sensor.intelligence_fc_porto_news`, `sensor.intelligence_fabr
 
 ## Dashboard cards
 
-Add one Manual card for trends and one for markets. The trend card combines the FC Porto and AI feeds, sorts them by date, and renders a source image (favicon) beside each story:
+Add one Manual card for trends. It combines the FC Porto and AI feeds, sorts them by date, and renders a source image (favicon) beside each story:
 
 ```yaml
 type: markdown
@@ -43,26 +43,6 @@ content: |-
   {% endfor %}
   {% endif %}
 ```
-
-```yaml
-type: markdown
-title: Mercados — cotações atuais
-content: |-
-  {% set quotes = state_attr('sensor.intelligence_market_overview', 'quotes') or [] %}
-  {% if not quotes %}
-  ⏳ Sem cotações disponíveis. Configure a API key do Twelve Data.
-  {% else %}
-  {% for quote in quotes %}
-  {% set change = quote['change_percent'] | float(0) %}
-  {% if quote['symbol'] == 'SXR8:XETR' %}{% set label = 'SXR8 ETF' %}{% elif quote['symbol'] == 'UBER' %}{% set label = 'Uber' %}{% elif quote['symbol'] == 'TSLA' %}{% set label = 'Tesla' %}{% else %}{% set label = quote['symbol'] %}{% endif %}
-  {% if change > 0 %}<font color="green">▲</font>{% elif change < 0 %}<font color="red">▼</font>{% else %}—{% endif %} **{{ label }}** · {{ '%.2f' | format(quote['price'] | float(0)) }} {{ quote['currency'] }} · {% if change > 0 %}<font color="green">+{{ '%.2f' | format(change) }}%</font>{% elif change < 0 %}<font color="red">{{ '%.2f' | format(change) }}%</font>{% else %}0.00%{% endif %}{% if quote['alerting'] %} ⚠️{% endif %}
-  {% endfor %}
-  {% endif %}
-
-  **SpaceX:** empresa privada, sem cotação pública em tempo real.
-```
-
-Market entities and price alerts appear after a Twelve Data API key is configured and the first quote collection succeeds. `SXR8:XETR` is the Xetra symbol used by Twelve Data. SpaceX is private and therefore cannot have a genuine public stock quote; the card labels that explicitly instead of showing an unrelated symbol. Notifications also require `notify_service`; quiet hours continue to apply.
 
 ## API
 
