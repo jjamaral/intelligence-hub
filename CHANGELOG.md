@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.4 - 2026-08-30
+
+- Publish up to five recent stories per news sensor for native Home Assistant dashboards.
+- Add a compact market overview sensor with prices, movements, and alert state.
+- Add configurable market movement alerts without repeated notifications while a symbol remains above threshold.
+- Publish collector readiness and errors to `sensor.intelligence_hub_status`.
+- Add a responsive native Home Assistant dashboard configuration.
+
 ## 0.1.3 - 2026-08-30
 
 - Start ingress before initial external collection and bound provider requests with timeouts.

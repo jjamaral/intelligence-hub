@@ -104,11 +104,13 @@ export function parseAppConfig(value: unknown): AppConfig {
   const newsPollMinutes = readNumber(value, "news_poll_minutes", 15);
   const marketPollMinutes = readNumber(value, "market_poll_minutes", 15);
   const alertThreshold = readNumber(value, "alert_threshold", 75);
+  const marketAlertPercent = readNumber(value, "market_alert_percent", 3);
 
   if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error("port must be an integer between 1 and 65535");
   if (newsPollMinutes < 1) throw new Error("news_poll_minutes must be >= 1");
   if (marketPollMinutes < 1) throw new Error("market_poll_minutes must be >= 1");
   if (alertThreshold < 0 || alertThreshold > 100) throw new Error("alert_threshold must be between 0 and 100");
+  if (marketAlertPercent <= 0 || marketAlertPercent > 100) throw new Error("market_alert_percent must be greater than 0 and at most 100");
 
   const notifyService = readOptionalString(value, "notify_service");
   const twelveDataApiKey = readOptionalString(value, "twelve_data_api_key");
@@ -119,6 +121,7 @@ export function parseAppConfig(value: unknown): AppConfig {
     newsPollMinutes,
     marketPollMinutes,
     alertThreshold,
+    marketAlertPercent,
     ...(notifyService === undefined ? {} : { notifyService }),
     ...(twelveDataApiKey === undefined ? {} : { twelveDataApiKey }),
     quietHours: readQuietHours(value),

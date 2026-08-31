@@ -1,5 +1,5 @@
 name: Intelligence Hub
-version: "0.1.3"
+version: "0.1.4"
 slug: intelligence_hub
 description: Local-first FC Porto, AI and market intelligence with Home Assistant alerts.
 startup: application
@@ -22,6 +22,7 @@ options:
   news_poll_minutes: 15
   market_poll_minutes: 15
   alert_threshold: 75
+  market_alert_percent: 3
   notify_service: ""
   twelve_data_api_key: ""
   quiet_start: "23:00"
@@ -35,6 +36,7 @@ schema:
   news_poll_minutes: int(1,1440)
   market_poll_minutes: int(1,1440)
   alert_threshold: int(0,100)
+  market_alert_percent: float(0.1,100)
   notify_service: str?
   twelve_data_api_key: password?
   quiet_start: str

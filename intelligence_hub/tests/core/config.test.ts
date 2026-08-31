@@ -9,6 +9,7 @@ test("parseAppConfig returns safe defaults", () => {
   assert.equal(config.newsPollMinutes, 15);
   assert.equal(config.marketPollMinutes, 15);
   assert.equal(config.alertThreshold, 75);
+  assert.equal(config.marketAlertPercent, 3);
   assert.equal(config.quietHours.start, "23:00");
   assert.equal(config.quietHours.end, "07:30");
   assert.deepEqual(config.marketSymbols, ["SPY", "TSLA", "UBER", "SPCX"]);
@@ -53,4 +54,14 @@ test("parseAppConfig validates custom feed priority boosts", () => {
     }),
     /priority_boost/
   );
+});
+
+test("parseAppConfig accepts a market movement alert threshold", () => {
+  const config = parseAppConfig({ market_alert_percent: 4.5 });
+  assert.equal(config.marketAlertPercent, 4.5);
+});
+
+test("parseAppConfig rejects an invalid market movement alert threshold", () => {
+  assert.throws(() => parseAppConfig({ market_alert_percent: 0 }), /market_alert_percent/);
+  assert.throws(() => parseAppConfig({ market_alert_percent: 101 }), /market_alert_percent/);
 });

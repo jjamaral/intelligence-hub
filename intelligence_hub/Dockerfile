@@ -1,6 +1,7 @@
-FROM node:22.16.0-alpine
+ARG BUILD_FROM=node:22.16.0-alpine
+FROM ${BUILD_FROM}
 
-ARG BUILD_VERSION=0.1.3
+ARG BUILD_VERSION=0.1.4
 ARG BUILD_ARCH=amd64
 
 LABEL io.hass.version="${BUILD_VERSION}" \
@@ -9,7 +10,8 @@ LABEL io.hass.version="${BUILD_VERSION}" \
 
 WORKDIR /app
 
-RUN apk add --no-cache tzdata
+RUN apk add --no-cache tzdata \
+    && if ! command -v node >/dev/null 2>&1; then apk add --no-cache nodejs npm; fi
 
 COPY package.json package-lock.json ./
 RUN npm ci

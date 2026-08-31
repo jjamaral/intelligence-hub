@@ -48,6 +48,7 @@ export interface AppConfig {
   readonly newsPollMinutes: number;
   readonly marketPollMinutes: number;
   readonly alertThreshold: number;
+  readonly marketAlertPercent: number;
   readonly notifyService?: string;
   readonly twelveDataApiKey?: string;
   readonly quietHours: QuietHours;
