@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.7 - 2026-08-31
+
+- Make trend-card links render as compact clickable HTML instead of exposing long Google News URLs.
+
 ## 0.1.6 - 2026-08-31
 
 - Remove unsupported `entity_id` keys from Markdown dashboard cards.

@@ -36,8 +36,8 @@ content: |-
   ⏳ Ainda não existem notícias recolhidas.
   {% else %}
   {% for item in items[:5] %}
-  <img src="https://www.google.com/s2/favicons?domain={{ item['url'].split('/')[2] }}&sz=64" width="28" height="28" align="left" style="margin-right:10px">
-  **[{{ item['title'] }}]({{ item['url'] }})**<br>
+  <img src="https://www.google.com/s2/favicons?domain=news.google.com&sz=64" width="28" height="28" align="left" style="margin-right:10px">
+  <a href="{{ item['url'] }}"><strong>{{ item['title'] }}</strong></a><br>
   _{{ item['source'] }} · {{ as_timestamp(item['published_at']) | timestamp_custom('%d %b %H:%M', true) }} · {{ item['category'] | replace('_', ' ') | title }} · {{ item['relevance'] }}/100_
 
   {% endfor %}
