@@ -4,7 +4,7 @@ A local-first Home Assistant App for curated FC Porto and AI news, market monito
 
 ## Status
 
-V0.1.5 is under active deployment testing. The backend is Node.js + TypeScript and runs as a Home Assistant App on Home Assistant OS.
+V0.1.6 is under active deployment testing. The backend is Node.js + TypeScript and runs as a Home Assistant App on Home Assistant OS.
 
 ## Core principles
 

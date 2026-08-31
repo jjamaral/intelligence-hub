@@ -28,10 +28,6 @@ Add one Manual card for trends and one for markets. The trend card combines the 
 ```yaml
 type: markdown
 title: Intelligence Hub — últimas tendências
-entity_id:
-  - sensor.intelligence_fc_porto_news
-  - sensor.intelligence_fabrizio_romano_news
-  - sensor.intelligence_ai_news
 content: |-
   {% set porto = state_attr('sensor.intelligence_fc_porto_news', 'items') or [] %}
   {% set ai = state_attr('sensor.intelligence_ai_news', 'items') or [] %}
@@ -51,8 +47,6 @@ content: |-
 ```yaml
 type: markdown
 title: Mercados — cotações atuais
-entity_id:
-  - sensor.intelligence_market_overview
 content: |-
   {% set quotes = state_attr('sensor.intelligence_market_overview', 'quotes') or [] %}
   {% if not quotes %}

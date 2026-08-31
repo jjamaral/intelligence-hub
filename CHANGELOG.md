@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.6 - 2026-08-31
+
+- Remove unsupported `entity_id` keys from Markdown dashboard cards.
+
 ## 0.1.5 - 2026-08-31
 
 - Increment version so Home Assistant detects the dashboard and market card update.
