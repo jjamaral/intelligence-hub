@@ -19,7 +19,7 @@ const DEFAULT_NEWS_FEEDS: readonly NewsFeedConfig[] = [
   { id: "ai-google", topic: "ai", source: "Google AI via Google News", url: "https://news.google.com/rss/search?q=site%3Ablog.google+Gemini+AI&hl=en-US&gl=US&ceid=US:en" }
 ];
 
-const DEFAULT_MARKET_SYMBOLS = ["SPY", "TSLA", "UBER", "SPCX"] as const;
+const DEFAULT_MARKET_SYMBOLS = ["SXR8:XETR", "UBER", "TSLA"] as const;
 const DEFAULT_QUIET_HOURS: QuietHours = { start: "23:00", end: "07:30" };
 
 function isRecord(value: unknown): value is Record<string, unknown> {

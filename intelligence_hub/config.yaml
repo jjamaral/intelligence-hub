@@ -28,10 +28,9 @@ options:
   quiet_start: "23:00"
   quiet_end: "07:30"
   market_symbols:
-    - SPY
-    - TSLA
+    - SXR8:XETR
     - UBER
-    - SPCX
+    - TSLA
 schema:
   news_poll_minutes: int(1,1440)
   market_poll_minutes: int(1,1440)

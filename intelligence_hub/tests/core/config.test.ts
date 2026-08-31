@@ -12,7 +12,7 @@ test("parseAppConfig returns safe defaults", () => {
   assert.equal(config.marketAlertPercent, 3);
   assert.equal(config.quietHours.start, "23:00");
   assert.equal(config.quietHours.end, "07:30");
-  assert.deepEqual(config.marketSymbols, ["SPY", "TSLA", "UBER", "SPCX"]);
+  assert.deepEqual(config.marketSymbols, ["SXR8:XETR", "UBER", "TSLA"]);
   assert.ok(config.newsFeeds.length >= 2);
   assert.deepEqual(config.newsFeeds[0], {
     id: "fc-porto-fabrizio-romano",

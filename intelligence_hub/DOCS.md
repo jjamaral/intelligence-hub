@@ -23,103 +23,52 @@ The app publishes `sensor.intelligence_fc_porto_news`, `sensor.intelligence_fabr
 
 ## Dashboard cards
 
-Add a Manual card to a Home Assistant dashboard and paste:
+Add one Manual card for trends and one for markets. The trend card combines the FC Porto and AI feeds, sorts them by date, and renders a source image (favicon) beside each story:
 
 ```yaml
-type: vertical-stack
-cards:
-  - type: markdown
-    title: Fabrizio Romano — destaque
-    entity_id:
-      - sensor.intelligence_fabrizio_romano_news
-    content: |-
-      {% set items = state_attr('sensor.intelligence_fabrizio_romano_news', 'items') or [] %}
-      {% if not has_value('sensor.intelligence_fabrizio_romano_news') %}
-      ⚠️ Notícias do Fabrizio temporariamente indisponíveis.
-      {% elif not items %}
-      À espera da primeira notícia do Fabrizio Romano sobre o FC Porto.
-      {% else %}
-      {% set item = items[0] %}
-      ## [{{ item['title'] }}]({{ item['url'] }})
-      _{{ item['source'] }} · {{ as_timestamp(item['published_at']) | timestamp_custom('%d %b %H:%M', true) }}_
+type: markdown
+title: Intelligence Hub — últimas tendências
+entity_id:
+  - sensor.intelligence_fc_porto_news
+  - sensor.intelligence_fabrizio_romano_news
+  - sensor.intelligence_ai_news
+content: |-
+  {% set porto = state_attr('sensor.intelligence_fc_porto_news', 'items') or [] %}
+  {% set ai = state_attr('sensor.intelligence_ai_news', 'items') or [] %}
+  {% set items = (porto + ai) | sort(attribute='published_at', reverse=true) %}
+  {% if not items %}
+  ⏳ Ainda não existem notícias recolhidas.
+  {% else %}
+  {% for item in items[:5] %}
+  <img src="https://www.google.com/s2/favicons?domain={{ item['url'].split('/')[2] }}&sz=64" width="28" height="28" align="left" style="margin-right:10px">
+  **[{{ item['title'] }}]({{ item['url'] }})**<br>
+  _{{ item['source'] }} · {{ as_timestamp(item['published_at']) | timestamp_custom('%d %b %H:%M', true) }} · {{ item['category'] | replace('_', ' ') | title }} · {{ item['relevance'] }}/100_
 
-      **{{ item['category'] | replace('_', ' ') | title }}** · relevância {{ item['relevance'] }}/100
-      {% endif %}
-
-  - type: markdown
-    title: FC Porto — últimas notícias
-    entity_id:
-      - sensor.intelligence_fc_porto_news
-    content: |-
-      {% set items = state_attr('sensor.intelligence_fc_porto_news', 'items') or [] %}
-      {% if not has_value('sensor.intelligence_fc_porto_news') %}
-      ⚠️ Notícias do FC Porto temporariamente indisponíveis.
-      {% elif not items %}
-      Ainda não foram recolhidas notícias do FC Porto.
-      {% else %}
-      {% for item in items[:5] %}
-      - [{{ item['title'] }}]({{ item['url'] }})
-        _{{ item['source'] }} · {{ as_timestamp(item['published_at']) | timestamp_custom('%d %b %H:%M', true) }} · relevância {{ item['relevance'] }}/100_
-      {% endfor %}
-      {% endif %}
-
-  - type: markdown
-    title: Inteligência Artificial — últimas notícias
-    entity_id:
-      - sensor.intelligence_ai_news
-    content: |-
-      {% set items = state_attr('sensor.intelligence_ai_news', 'items') or [] %}
-      {% if not has_value('sensor.intelligence_ai_news') %}
-      ⚠️ Notícias de IA temporariamente indisponíveis.
-      {% elif not items %}
-      Ainda não foram recolhidas notícias de IA.
-      {% else %}
-      {% for item in items[:5] %}
-      - [{{ item['title'] }}]({{ item['url'] }})
-        _{{ item['source'] }} · {{ as_timestamp(item['published_at']) | timestamp_custom('%d %b %H:%M', true) }} · relevância {{ item['relevance'] }}/100_
-      {% endfor %}
-      {% endif %}
-
-  - type: markdown
-    title: Mercados
-    entity_id:
-      - sensor.intelligence_market_overview
-      - sensor.intelligence_hub_status
-    content: |-
-      {% set market_status = state_attr('sensor.intelligence_hub_status', 'markets_status') %}
-      {% set quotes = state_attr('sensor.intelligence_market_overview', 'quotes') or [] %}
-      {% if market_status == 'disabled' %}
-      A recolha de mercados está desativada. Configure `twelve_data_api_key` no add-on.
-      {% elif not has_value('sensor.intelligence_market_overview') %}
-      ⚠️ Dados de mercado temporariamente indisponíveis.
-      {% elif not quotes %}
-      À espera da primeira recolha de preços.
-      {% else %}
-      {% for quote in quotes %}
-      {% set change = quote['change_percent'] | float(0) %}
-      - **{{ quote['symbol'] }}** — {{ '%.2f' | format(quote['price'] | float(0)) }} {{ quote['currency'] }} · {% if change > 0 %}🟢 ▲{% elif change < 0 %}🔴 ▼{% else %}⚪ —{% endif %} {{ '%+.2f' | format(change) }}%{% if quote['alerting'] %} ⚠️{% endif %}
-      {% endfor %}
-      {% endif %}
-
-  - type: markdown
-    title: Estado da recolha
-    entity_id:
-      - sensor.intelligence_hub_status
-    content: |-
-      {% set overall = states('sensor.intelligence_hub_status') %}
-      {% if overall == 'ready' %}
-      ✅ Todos os coletores ativos estão saudáveis.
-      {% elif overall == 'degraded' %}
-      ⚠️ Alguns dados podem estar desatualizados.
-      {% else %}
-      ⏳ Recolha inicial em curso.
-      {% endif %}
-
-      - **Notícias:** {{ state_attr('sensor.intelligence_hub_status', 'news_status') or 'unknown' }}{% set news_error = (state_attr('sensor.intelligence_hub_status', 'news_errors') or []) | first %}{% if news_error %} — {{ news_error }}{% endif %}
-      - **Mercados:** {{ state_attr('sensor.intelligence_hub_status', 'markets_status') or 'unknown' }}{% set market_error = (state_attr('sensor.intelligence_hub_status', 'markets_errors') or []) | first %}{% if market_error %} — {{ market_error }}{% endif %}
+  {% endfor %}
+  {% endif %}
 ```
 
-Market entities and price alerts appear after a Twelve Data API key is configured and the first quote collection succeeds. Notifications also require `notify_service`; quiet hours continue to apply.
+```yaml
+type: markdown
+title: Mercados — cotações atuais
+entity_id:
+  - sensor.intelligence_market_overview
+content: |-
+  {% set quotes = state_attr('sensor.intelligence_market_overview', 'quotes') or [] %}
+  {% if not quotes %}
+  ⏳ Sem cotações disponíveis. Configure a API key do Twelve Data.
+  {% else %}
+  {% for quote in quotes %}
+  {% set change = quote['change_percent'] | float(0) %}
+  {% if quote['symbol'] == 'SXR8:XETR' %}{% set label = 'SXR8 ETF' %}{% elif quote['symbol'] == 'UBER' %}{% set label = 'Uber' %}{% elif quote['symbol'] == 'TSLA' %}{% set label = 'Tesla' %}{% else %}{% set label = quote['symbol'] %}{% endif %}
+  {% if change > 0 %}<font color="green">▲</font>{% elif change < 0 %}<font color="red">▼</font>{% else %}—{% endif %} **{{ label }}** · {{ '%.2f' | format(quote['price'] | float(0)) }} {{ quote['currency'] }} · {% if change > 0 %}<font color="green">+{{ '%.2f' | format(change) }}%</font>{% elif change < 0 %}<font color="red">{{ '%.2f' | format(change) }}%</font>{% else %}0.00%{% endif %}{% if quote['alerting'] %} ⚠️{% endif %}
+  {% endfor %}
+  {% endif %}
+
+  **SpaceX:** empresa privada, sem cotação pública em tempo real.
+```
+
+Market entities and price alerts appear after a Twelve Data API key is configured and the first quote collection succeeds. `SXR8:XETR` is the Xetra symbol used by Twelve Data. SpaceX is private and therefore cannot have a genuine public stock quote; the card labels that explicitly instead of showing an unrelated symbol. Notifications also require `notify_service`; quiet hours continue to apply.
 
 ## API
 
